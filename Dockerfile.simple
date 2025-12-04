@@ -18,4 +18,4 @@ COPY . .
 
 EXPOSE 3000
 
-CMD npx prisma migrate deploy && npm run dev
+CMD rm -rf .next && npx prisma migrate deploy && npm run dev

@@ -2,7 +2,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.simple
     container_name: christmas-feedback-app
     restart: unless-stopped
     ports:

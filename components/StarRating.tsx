@@ -12,12 +12,12 @@ export default function StarRating({ value, onChange, label }: StarRatingProps) 
   const [hoverValue, setHoverValue] = useState(0);
 
   return (
-    <div className="space-y-2">
-      <label className="block text-sm font-medium text-gray-700">
+    <div style={{ marginBottom: '0.5rem' }}>
+      <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: '#374151', marginBottom: '0.5rem' }}>
         {label}
-        <span className="text-christmas-red ml-1">*</span>
+        <span style={{ color: '#dc2626', marginLeft: '0.25rem' }}>*</span>
       </label>
-      <div className="flex gap-2 items-center">
+      <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
         {[1, 2, 3, 4, 5].map((star) => (
           <button
             key={star}
@@ -25,15 +25,24 @@ export default function StarRating({ value, onChange, label }: StarRatingProps) 
             onClick={() => onChange(star)}
             onMouseEnter={() => setHoverValue(star)}
             onMouseLeave={() => setHoverValue(0)}
-            className="transition-all duration-150 ease-in-out transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-christmas-gold focus:ring-offset-2 rounded"
+            style={{
+              border: 'none',
+              background: 'none',
+              cursor: 'pointer',
+              padding: 0,
+              transition: 'transform 0.15s',
+            }}
+            onMouseOver={(e) => (e.currentTarget.style.transform = 'scale(1.1)')}
+            onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')}
             aria-label={`Rate ${star} out of 5 stars`}
           >
             <svg
-              className={`w-8 h-8 sm:w-10 sm:h-10 transition-colors duration-150 ${
-                star <= (hoverValue || value)
-                  ? 'text-christmas-gold fill-current'
-                  : 'text-gray-300'
-              }`}
+              style={{
+                width: '2.5rem',
+                height: '2.5rem',
+                transition: 'color 0.15s',
+                color: star <= (hoverValue || value) ? '#eab308' : '#d1d5db',
+              }}
               fill={star <= (hoverValue || value) ? 'currentColor' : 'none'}
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -48,7 +57,7 @@ export default function StarRating({ value, onChange, label }: StarRatingProps) 
             </svg>
           </button>
         ))}
-        <span className="ml-2 text-sm font-medium text-gray-600">
+        <span style={{ marginLeft: '0.5rem', fontSize: '0.875rem', fontWeight: 500, color: '#6b7280' }}>
           {value > 0 ? `${value}/5` : 'Not rated'}
         </span>
       </div>

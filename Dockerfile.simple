@@ -5,16 +5,16 @@ WORKDIR /app
 # Install OpenSSL for Prisma
 RUN apk add --no-cache openssl
 
-# Copy package files
-COPY package.json package-lock.json* ./
+# Copy package.json
+COPY package.json ./
 
-# Install dependencies with legacy peer deps to avoid conflicts
-RUN npm install --legacy-peer-deps --loglevel verbose
+# Install dependencies without package-lock.json
+RUN npm install --legacy-peer-deps
 
-# Copy source files
+# Copy all source files
 COPY . .
 
-# CRITICAL: Remove any cached .next build that might have old Tailwind
+# Remove any cached builds
 RUN rm -rf .next node_modules/.cache
 
 # Generate Prisma Client

@@ -15,6 +15,7 @@ services:
         condition: service_healthy
     networks:
       - feedback-network
+      - net
 
   db:
     image: postgres:16-alpine
@@ -34,13 +35,11 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - feedback-network
+      - net
 
 volumes:
   postgres_data:
 
 networks:
-  feedback-network:
-    driver: bridge
   net:
-    external: true
+    name: net

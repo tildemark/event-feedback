@@ -8,20 +8,22 @@ RUN apk add --no-cache openssl
 # Copy package files
 COPY package.json package-lock.json* ./
 
-# Install all dependencies
+# Install all dependencies (including devDependencies for Tailwind/PostCSS)
 RUN npm install
 
-# Copy everything
+# Copy source files
 COPY . .
 
 # Generate Prisma Client
 RUN npx prisma generate
 
+# Set environment variables
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=development
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
 EXPOSE 3000
 
-# Run in dev mode - simpler and just works
-CMD ["sh", "-c", "npx prisma migrate deploy && npm run dev"]
+# Run migrations and start dev server
+CMD ["sh", "-c", "npx prisma migrate deploy && npm run dev -- --hostname 0.0.0.0"]

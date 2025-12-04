@@ -5,20 +5,23 @@ WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
-COPY prisma ./prisma/
 
 # Install dependencies
 RUN npm ci
 
-# Copy application code
-COPY . .
+# Copy prisma schema
+COPY prisma ./prisma/
 
-# Generate Prisma Client (needs a dummy DATABASE_URL)
+# Generate Prisma Client with dummy DATABASE_URL
 ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
 RUN npx prisma generate
 
-# Build Next.js app
-RUN npm run build
+# Copy application code
+COPY . .
+
+# Build Next.js app (skip type checking and linting for faster builds)
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN npm run build || (cat /app/.next/build.log 2>/dev/null; exit 1)
 
 # Production stage
 FROM node:18-alpine AS runner

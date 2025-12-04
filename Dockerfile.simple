@@ -5,20 +5,34 @@ WORKDIR /app
 # Install OpenSSL for Prisma
 RUN apk add --no-cache openssl
 
-# Set environment
-ENV NODE_ENV=production
-
-# Copy package files
+# Copy package files first
 COPY package.json package-lock.json* ./
 
-# Install dependencies
+# Install ALL dependencies (including devDependencies for build)
 RUN npm install
 
-# Copy application files
-COPY . .
+# Copy config files needed for build
+COPY postcss.config.mjs ./
+COPY tailwind.config.ts ./
+COPY tsconfig.json ./
+COPY next.config.mjs ./
+
+# Copy Prisma schema
+COPY prisma ./prisma/
 
 # Generate Prisma Client
+ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
 RUN npx prisma generate
+
+# Copy all application files
+COPY . .
+
+# Build the application
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN npm run build
+
+# Set production environment
+ENV NODE_ENV=production
 
 EXPOSE 3000
 

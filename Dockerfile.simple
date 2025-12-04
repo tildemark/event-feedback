@@ -1,4 +1,4 @@
-FROM node:18-alpine AS builder
+FROM node:18-alpine
 
 WORKDIR /app
 
@@ -8,48 +8,20 @@ RUN apk add --no-cache openssl
 # Copy package files
 COPY package.json package-lock.json* ./
 
-# Install all dependencies (including dev)
+# Install all dependencies
 RUN npm install
 
-# Copy config files
-COPY postcss.config.mjs ./
-COPY tailwind.config.ts ./
-COPY tsconfig.json ./
-COPY next.config.mjs ./
-COPY .eslintrc.json ./
-
-# Copy Prisma schema
-COPY prisma ./prisma/
-
-# Generate Prisma Client
-ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
-RUN npx prisma generate
-
-# Copy application files
+# Copy everything
 COPY . .
 
-# Build the application
+# Generate Prisma Client
+RUN npx prisma generate
+
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN npm run build
-
-# Production stage
-FROM node:18-alpine AS runner
-
-WORKDIR /app
-
-# Install OpenSSL for Prisma
-RUN apk add --no-cache openssl
-
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
-
-# Copy everything from builder (includes node_modules with all deps)
-COPY --from=builder /app ./
-
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
 EXPOSE 3000
 
-# Start application
-CMD ["sh", "-c", "npx prisma migrate deploy && npm start"]
+# Run in dev mode - simpler and just works
+CMD ["sh", "-c", "npx prisma migrate deploy && npm run dev"]

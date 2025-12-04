@@ -3,14 +3,15 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-# Install dependencies required for building
-RUN apk add --no-cache libc6-compat openssl
+# Install dependencies required for building (including Python for node-gyp)
+RUN apk add --no-cache libc6-compat openssl python3 make g++
 
 # Copy package files
-COPY package*.json ./
+COPY package.json package-lock.json* ./
 
-# Install dependencies with legacy peer deps to avoid conflicts
-RUN npm install --legacy-peer-deps
+# Clean install
+RUN npm cache clean --force && \
+    npm install --verbose || npm install --legacy-peer-deps --verbose
 
 # Copy prisma schema
 COPY prisma ./prisma/
@@ -22,9 +23,9 @@ RUN npx prisma generate
 # Copy application code
 COPY . .
 
-# Build Next.js app (skip type checking and linting for faster builds)
+# Build Next.js app
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN npm run build || (cat /app/.next/build.log 2>/dev/null; exit 1)
+RUN npm run build
 
 # Production stage
 FROM node:18-alpine AS runner

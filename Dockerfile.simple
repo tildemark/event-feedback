@@ -4,9 +4,12 @@ WORKDIR /app
 
 RUN apk add --no-cache openssl
 
-COPY . .
+COPY package*.json ./
+COPY prisma ./prisma
 
 RUN npm install
+
+COPY . .
 
 EXPOSE 3000
 

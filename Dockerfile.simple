@@ -9,7 +9,6 @@ RUN apk add --no-cache openssl
 COPY package.json package-lock.json* ./
 
 # Install ALL dependencies including devDependencies (needed for build)
-# Don't set NODE_ENV to production yet
 RUN npm install
 
 # Copy config files needed for build
@@ -29,24 +28,16 @@ RUN npx prisma generate
 # Copy all application files
 COPY . .
 
-# Build the application (NODE_ENV not set to production during build)
+# Build the application
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
-# Copy standalone server and static files to root
-RUN cp -r .next/standalone/* . && \
-    cp -r .next/static ./.next/static && \
-    cp -r public ./public
-
-# Copy prisma for migrations
-COPY prisma ./prisma/
-
-# NOW set production environment for runtime
+# Set production environment for runtime
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
 EXPOSE 3000
 
-# Start application (use the built production server)
-CMD ["sh", "-c", "npx prisma migrate deploy && node server.js"]
+# Start application using npm start (which runs the built Next.js app)
+CMD ["sh", "-c", "npx prisma migrate deploy && npm start"]

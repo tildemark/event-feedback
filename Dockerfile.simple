@@ -33,6 +33,14 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
+# Copy standalone server and static files to root
+RUN cp -r .next/standalone/* . && \
+    cp -r .next/static ./.next/static && \
+    cp -r public ./public
+
+# Copy prisma for migrations
+COPY prisma ./prisma/
+
 # NOW set production environment for runtime
 ENV NODE_ENV=production
 ENV PORT=3000

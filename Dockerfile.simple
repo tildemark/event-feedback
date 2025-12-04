@@ -8,8 +8,8 @@ RUN apk add --no-cache openssl
 # Copy package files
 COPY package.json package-lock.json* ./
 
-# Install all dependencies (including devDependencies for Tailwind/PostCSS)
-RUN npm install
+# Install dependencies with legacy peer deps to avoid conflicts
+RUN npm install --legacy-peer-deps --loglevel verbose
 
 # Copy source files
 COPY . .

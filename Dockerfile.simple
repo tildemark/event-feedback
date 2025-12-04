@@ -4,12 +4,16 @@ WORKDIR /app
 
 RUN apk add --no-cache openssl
 
+# Copy config files first
 COPY package*.json ./
+COPY postcss.config.js ./
+COPY tailwind.config.js ./
 COPY prisma ./prisma
 
 # Clear npm cache and install fresh
 RUN npm cache clean --force && npm install
 
+# Copy rest of the source
 COPY . .
 
 EXPOSE 3000

@@ -3,6 +3,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.simple
+      args:
+        CACHE_DATE: 20251204-V1
+        NPM_CONFIG_PRODUCTION: "false"
+        NODE_ENV: development
+        CI: "false"
+        NEXT_TELEMETRY_DISABLED: "1"
     container_name: christmas-feedback-app
     restart: unless-stopped
     ports:

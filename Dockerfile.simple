@@ -43,13 +43,18 @@ RUN apk add --no-cache openssl
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Copy necessary files from builder
+# Copy package files
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/package-lock.json* ./
+
+# Install ONLY production dependencies
+RUN npm ci --only=production
+
+# Copy built app and necessary files from builder
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"

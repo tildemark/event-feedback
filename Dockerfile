@@ -13,7 +13,8 @@ RUN npm ci
 # Copy application code
 COPY . .
 
-# Generate Prisma Client
+# Generate Prisma Client (needs a dummy DATABASE_URL)
+ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
 RUN npx prisma generate
 
 # Build Next.js app

@@ -8,6 +8,7 @@ RUN apk add --no-cache openssl
 COPY package*.json ./
 COPY postcss.config.js ./
 COPY tailwind.config.js ./
+COPY next.config.js ./
 COPY prisma ./prisma
 
 # Clear npm cache and install fresh

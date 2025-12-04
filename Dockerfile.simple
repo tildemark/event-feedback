@@ -14,8 +14,8 @@ RUN npm install
 # Copy source files
 COPY . .
 
-# Clean any existing build artifacts
-RUN rm -rf .next
+# CRITICAL: Remove any cached .next build that might have old Tailwind
+RUN rm -rf .next node_modules/.cache
 
 # Generate Prisma Client
 RUN npx prisma generate
@@ -29,4 +29,4 @@ ENV HOSTNAME="0.0.0.0"
 EXPOSE 3000
 
 # Run migrations and start dev server
-CMD ["sh", "-c", "npx prisma migrate deploy && npm run dev -- --hostname 0.0.0.0"]
+CMD ["sh", "-c", "rm -rf .next && npx prisma migrate deploy && npm run dev -- --hostname 0.0.0.0"]

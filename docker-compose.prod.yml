@@ -8,30 +8,30 @@ services:
     container_name: christmas-feedback-app
     restart: unless-stopped
     ports:
-      - "${APP_PORT:-3000}:3000"  # Change APP_PORT in .env if 3000 is taken
+      - "${APP_PORT:-3001}:3000"
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-feedbackuser}:${POSTGRES_PASSWORD:-changeme}@db:5432/${POSTGRES_DB:-christmas_feedback}
     depends_on:
-      postgres:
+      db:
         condition: service_healthy
     networks:
       - feedback-network
 
-  postgres:
+  db:
     image: postgres:16-alpine
     container_name: christmas-feedback-db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_USER: ${POSTGRES_USER:-feedbackuser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
       POSTGRES_DB: ${POSTGRES_DB:-christmas_feedback}
     ports:
-      - "${DB_PORT:-5432}:5432"  # Change DB_PORT in .env if 5432 is taken
+      - "${DB_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-feedbackuser}"]
       interval: 5s
       timeout: 5s
       retries: 5

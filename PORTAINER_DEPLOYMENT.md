@@ -88,25 +88,22 @@ Save and exit.
 
 2. **Name:** `christmas-feedback`
 
-3. **Build method:** Select "Repository"
+3. **Build method:** Select "Git Repository"
    - Repository URL: `https://github.com/tildemark/event-feedback`
    - Repository reference: `refs/heads/main`
    - Compose path: `docker-compose.prod.yml`
 
-4. **OR Build method:** Select "Upload" or "Web editor"
-   - Upload the `docker-compose.prod.yml` file
-   - Or paste its contents
+4. **Environment variables:** Click "Add an environment variable" and add these:
+   
+   | Name | Value | Description |
+   |------|-------|-------------|
+   | `APP_PORT` | `3001` | Application port (available on your server) |
+   | `DB_PORT` | `5432` | Database port (available on your server) |
+   | `POSTGRES_USER` | `feedbackuser` | Database username |
+   | `POSTGRES_PASSWORD` | `YourSecurePassword123!` | Strong database password |
+   | `POSTGRES_DB` | `christmas_feedback` | Database name |
 
-5. **Environment variables:**
-   Click "Add an environment variable" and add:
-   - Name: `APP_PORT`, Value: `3001`
-   - Name: `DB_PORT`, Value: `5433`
-
-6. **Advanced settings:**
-   - Enable "Auto update"
-   - Set update interval (optional)
-
-7. Click **Deploy the stack**
+5. Click **Deploy the stack**
 
 ### Step 4: Run Database Migration
 

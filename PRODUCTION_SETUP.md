@@ -92,9 +92,9 @@ nano .env.production
 # Database Configuration
 DATABASE_URL="postgresql://feedbackuser:YOUR_SECURE_PASSWORD@db:5432/christmas_feedback"
 
-# Port Configuration - USE AVAILABLE PORTS!
-APP_PORT=3001  # Change if port 3001 is taken
-DB_PORT=5433   # Change if port 5433 is taken
+# Port Configuration - Available ports on your server
+APP_PORT=3001  # Available: 3001, 3002, 3003, 3004, 3005
+DB_PORT=5432   # Available: 5432, 5433, 5434, 5435
 
 # Environment
 NODE_ENV=production

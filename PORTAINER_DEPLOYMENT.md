@@ -75,8 +75,8 @@ nano .env.production
 **Edit `.env.production`:**
 ```env
 DATABASE_URL="postgresql://feedbackuser:YOUR_SECURE_PASSWORD@db:5432/christmas_feedback"
-APP_PORT=3001
-DB_PORT=5433
+APP_PORT=3001    # Available: 3001-3005
+DB_PORT=5432     # Available: 5432-5435
 NODE_ENV=production
 ```
 

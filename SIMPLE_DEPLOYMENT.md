@@ -109,9 +109,16 @@ docker-compose -f docker-compose.prod.yml logs -f
 ## Quick Commands Reference
 
 ### Check Application Status
+
+**Via Command Line:**
 ```bash
 ssh user@10.10.0.3 "cd /opt/christmas-feedback && docker ps"
 ```
+
+**Via Portainer:**
+- Open http://10.10.0.3:9091
+- Go to Containers
+- Look for `christmas-feedback-app` and `christmas-feedback-db`
 
 ### View Live Logs
 ```bash

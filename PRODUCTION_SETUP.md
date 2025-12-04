@@ -5,9 +5,11 @@
 ### Prerequisites
 
 1. SSH access to production server (10.10.0.3)
-2. Docker and Docker Compose installed
+2. Docker and Docker Compose installed (✅ Already have Portainer at port 9091)
 3. Git installed
 4. Sudo privileges
+
+**Note:** You have Portainer installed at http://10.10.0.3:9091 - You can use it to manage containers! See `PORTAINER_DEPLOYMENT.md` for Portainer-specific instructions.
 
 ---
 

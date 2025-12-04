@@ -2,31 +2,12 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Install OpenSSL for Prisma
 RUN apk add --no-cache openssl
 
-# Copy package.json
-COPY package.json ./
-
-# Install dependencies without package-lock.json
-RUN npm install --legacy-peer-deps
-
-# Copy all source files
 COPY . .
 
-# Remove any cached builds
-RUN rm -rf .next node_modules/.cache
-
-# Generate Prisma Client
-RUN npx prisma generate
-
-# Set environment variables
-ENV NEXT_TELEMETRY_DISABLED=1
-ENV NODE_ENV=development
-ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
+RUN npm install
 
 EXPOSE 3000
 
-# Run migrations and start dev server
-CMD ["sh", "-c", "rm -rf .next && npx prisma migrate deploy && npm run dev -- --hostname 0.0.0.0"]
+CMD npx prisma migrate deploy && npm run dev

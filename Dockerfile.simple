@@ -1,17 +1,17 @@
-FROM node:18-alpine
+FROM node:18-alpine AS builder
 
 WORKDIR /app
 
 # Install OpenSSL for Prisma
 RUN apk add --no-cache openssl
 
-# Copy package files first
+# Copy package files
 COPY package.json package-lock.json* ./
 
-# Install ALL dependencies including devDependencies (needed for build)
+# Install all dependencies (including dev)
 RUN npm install
 
-# Copy config files needed for build
+# Copy config files
 COPY postcss.config.mjs ./
 COPY tailwind.config.ts ./
 COPY tsconfig.json ./
@@ -25,19 +25,36 @@ COPY prisma ./prisma/
 ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
 RUN npx prisma generate
 
-# Copy all application files
+# Copy application files
 COPY . .
 
 # Build the application
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
-# Set production environment for runtime
+# Production stage
+FROM node:18-alpine AS runner
+
+WORKDIR /app
+
+# Install OpenSSL for Prisma
+RUN apk add --no-cache openssl
+
 ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Copy necessary files from builder
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/package-lock.json* ./
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/prisma ./prisma
+
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
 EXPOSE 3000
 
-# Start application using npm start (which runs the built Next.js app)
+# Start application
 CMD ["sh", "-c", "npx prisma migrate deploy && npm start"]

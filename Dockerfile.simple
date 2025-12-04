@@ -43,11 +43,8 @@ RUN apk add --no-cache openssl
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Copy everything from builder (simpler approach)
+# Copy everything from builder (includes node_modules with all deps)
 COPY --from=builder /app ./
-
-# Remove node_modules and reinstall only production deps
-RUN rm -rf node_modules && npm ci --only=production
 
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
